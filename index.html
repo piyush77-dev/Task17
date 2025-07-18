@@ -1,61 +1,150 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>My Basic Info</title>
-    <style>
-        body {
-            background: linear-gradient(to right, #d3cce3, #e9e4f0);
-            font-family: 'Segoe UI', sans-serif;
-            text-align: center;
-            padding: 50px;
-            color: #333;
-        }
-
-        h1 {
-            color: #4B0082;
-            font-size: 3em;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px #aaa;
-        }
-
-        h2 {
-            color: #6A5ACD;
-            font-size: 2.2em;
-            margin-bottom: 10px;
-        }
-
-        h3 {
-            color: #4169E1;
-            font-size: 1.8em;
-        }
-
-        h4, h5, h6 {
-            font-size: 1.2em;
-            color: #2F4F4F;
-            font-weight: normal;
-            margin: 8px 0;
-        }
-
-        .box {
-            background-color: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            display: inline-block;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <title>JavaScript Exception Handling Examples</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body{font-family:system-ui,Arial,sans-serif;line-height:1.4;margin:2rem;max-width:800px}
+    h1{margin-top:0}
+    section{margin-bottom:2rem;padding:1rem;border:1px solid #ccc;border-radius:8px}
+    button{margin-top:.5rem;padding:.4rem .8rem;cursor:pointer;border-radius:4px;border:1px solid #888;background:#f5f5f5}
+    pre{background:#111;color:#0f0;padding:1rem;min-height:8rem;white-space:pre-wrap;word-break:break-word}
+    code{background:#eee;padding:0 .25em;border-radius:3px}
+    .example-desc{font-size:.9rem;color:#444;margin:.25rem 0 .75rem}
+  </style>
 </head>
 <body>
-    <div class="box">
-        <h1>gaya college of emngineering</h1>
-        <h2>Name: Aman Kumar</h2>
-        <h3>College Name: gaya college of engineering</h3>
-        <h4>Registration No: 23105110103</h4>
-        <h5>Roll No: 23cse06</h5>
-        <h6>Hello! I'm a Computer Science student passionate about web development, design, and AI. I enjoy building creative and functional websites!</h6>
-    </div>
+  <h1>JavaScript: Exception Handling – Exam Quick Reference</h1>
+  <p>Click each button to run the corresponding example. Open your browser console as well (F12) to see logged details.</p>
+
+  <!-- 1. ReferenceError: using an undeclared variable -->
+  <section id="ex1">
+    <h2>1. Handle exception caused by printing an <em>undeclared</em> variable</h2>
+    <p class="example-desc">We <code>try</code> to use a variable that was never declared. JavaScript throws a <code>ReferenceError</code>. We <code>catch</code> and display the error message.</p>
+    <button onclick="runUndeclaredVarExample()">Run Example 1</button>
+  </section>
+
+  <!-- 2. Throw Divide By Zero Error -->
+  <section id="ex2">
+    <h2>2. Throw &quot;Divide by Zero&quot; error using <code>throw</code></h2>
+    <p class="example-desc">If denominator is 0, we manually <code>throw</code> an <code>Error</code> object with message &quot;Divide by Zero&quot;.</p>
+    <label>Numerator: <input id="numA" type="number" value="10"></label>
+    <label>Denominator: <input id="numB" type="number" value="0"></label>
+    <button onclick="runDivideExample()">Run Example 2</button>
+  </section>
+
+  <!-- 3. Throw Out of Bound Error -->
+  <section id="ex3">
+    <h2>3. Throw &quot;Out of Bound&quot; error when array index invalid</h2>
+    <p class="example-desc">We check the index before access. If it is &lt;0 or &gt;=length we <code>throw</code> a <code>RangeError</code> (custom message: &quot;Out of Bound Error&quot;).</p>
+    <label>Index: <input id="idx" type="number" value="5"></label>
+    <button onclick="runOutOfBoundsExample()">Run Example 3</button>
+  </section>
+
+  <!-- 4. Finally Demo -->
+  <section id="ex4">
+    <h2>4. Exception handling with <code>finally</code></h2>
+    <p class="example-desc">The <code>finally</code> block runs <strong>always</strong> (after <code>try</code>/<code>catch</code>) – good for cleanup (close files, hide loaders, release resources).</p>
+    <button onclick="runFinallyExample(true)">Run Example 4 (Cause Error)</button>
+    <button onclick="runFinallyExample(false)">Run Example 4 (No Error)</button>
+  </section>
+
+  <h2>Output</h2>
+  <pre id="output">(Results appear here)</pre>
+
+  <script>
+  /* Utility: append a line to the on‑page <pre> and console */
+  function logOut(msg){
+    const out = document.getElementById('output');
+    out.textContent += (out.textContent.endsWith('\n') || out.textContent === '' ? '' : '\n') + msg + '\n';
+    console.log(msg);
+  }
+  function clearOut(){
+    document.getElementById('output').textContent = '';
+  }
+
+  // 1. ReferenceError example -------------------------------------------------
+  function runUndeclaredVarExample(){
+    clearOut();
+    logOut('Example 1: Undeclared variable');
+    try {
+      // Intentionally reference a variable that does NOT exist.
+      // Using eval so linting doesn't complain.
+      /* eslint-disable no-eval */
+      const val = eval('someVariableThatIsNotDeclared');
+      logOut('Value: ' + val); // won't reach here
+    } catch (err){
+      logOut('Caught error: ' + err.name + ' - ' + err.message);
+    } finally {
+      logOut('Example 1 finished.');
+    }
+  }
+
+  // 2. Divide by Zero example -------------------------------------------------
+  function safeDivide(a,b){
+    if(b === 0){
+      throw new Error('Divide by Zero');
+    }
+    return a / b;
+  }
+  function runDivideExample(){
+    clearOut();
+    logOut('Example 2: Divide by Zero');
+    const a = Number(document.getElementById('numA').value);
+    const b = Number(document.getElementById('numB').value);
+    try {
+      const result = safeDivide(a,b);
+      logOut(a + ' / ' + b + ' = ' + result);
+    } catch(err){
+      logOut('Caught error: ' + err.message);
+    } finally {
+      logOut('Example 2 finished.');
+    }
+  }
+
+  // 3. Out of Bound example ---------------------------------------------------
+  const sampleArray = ['A','B','C'];
+  function getArrayElement(arr, index){
+    if(index < 0 || index >= arr.length){
+      throw new RangeError('Out of Bound Error: valid 0..' + (arr.length-1) + ', got ' + index);
+    }
+    return arr[index];
+  }
+  function runOutOfBoundsExample(){
+    clearOut();
+    logOut('Example 3: Out of Bound');
+    const index = Number(document.getElementById('idx').value);
+    try {
+      const elem = getArrayElement(sampleArray, index);
+      logOut('Element at index ' + index + ' = ' + elem);
+    } catch(err){
+      logOut('Caught error: ' + err.name + ' - ' + err.message);
+    } finally {
+      logOut('Example 3 finished.');
+    }
+  }
+
+  // 4. finally example --------------------------------------------------------
+  function riskyOperation(shouldFail){
+    if(shouldFail){
+      throw new Error('Forced failure in riskyOperation');
+    }
+    return 'Success from riskyOperation';
+  }
+  function runFinallyExample(shouldFail){
+    clearOut();
+    logOut('Example 4: finally');
+    try {
+      const msg = riskyOperation(shouldFail);
+      logOut('Operation result: ' + msg);
+    } catch(err){
+      logOut('Caught error: ' + err.message);
+    } finally {
+      logOut('Cleanup runs here (finally).');
+      logOut('Example 4 finished.');
+    }
+  }
+  </script>
 </body>
 </html>
-
-
